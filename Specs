@@ -1,0 +1,29 @@
+This Specs is based on Problem 2.30, Chapter 2, Simulation Modeling and Analysis, Law.
+
+- Simulation is done from 11:30 AM to 1:00 PM
+- Customers arrive together in groups of size 1,2,3 and 4, with respective probabilities 0.5, 0.3, 0.1 and 0.1
+- Interarrival time between groups is Exp with mean 30 seconds.
+- System is empty and idle intially.
+- System is run for the 90-minute period.
+- Customer has 3 routes:
+1- Hot-food ---> Drinks ---> Cashier (prob. 0.80)
+2- Sandwiches --> Drinks --> Cashier (prob. 0.15)
+3- Drinks -----------------> Cashier (prob. 0.05)
+- In hot food and sandwiches, customers are served one at a time.
+- The drink stand is self-service (have infinitely many servers)
+- There are either 2 or 3 cachiers.
+- Customers arriving to cashier choose the shortest queue.
+- In the following
+ST ---> Service Time.
+ACT --> accumelated (future) cashier time due to having visited a station.
+
+========================================
+| Service     ||  ST       || ACT      |
+========================================
+| Hot Food    || U(50,120) || U(20,40) |
+----------------------------------------
+| Sandwiches  || U(60,180) || U(5,15)  |
+----------------------------------------
+| Drinks      || U(5,20)   || U(5,10)  |
+========================================
+
