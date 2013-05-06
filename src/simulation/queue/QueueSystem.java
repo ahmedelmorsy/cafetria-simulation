@@ -53,6 +53,10 @@ public class QueueSystem {
         return true;
     }
     
+    public int getQueueLength() {
+        return this.queue.size();
+    }
+    
     protected QueueEntry dequeue() {
         if (queue.size() > 0) return queue.getFirst();
         return null;

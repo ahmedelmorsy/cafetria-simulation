@@ -13,6 +13,8 @@ public class ExponentialRandom {
     }
     
     public int nextInt() {
-        return (int) (-1 * mean * Math.log(uGen.nextDouble()));
+        double u = uGen.nextDouble();
+        System.out.println(u);
+        return (int) (-1 * mean * Math.log(u));
     }
 }
