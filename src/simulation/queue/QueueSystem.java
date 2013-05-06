@@ -1,6 +1,8 @@
-package cafetria.queue;
+package simulation.queue;
 
 import java.util.LinkedList;
+
+import simulation.global.Event;
 
 
 /**
@@ -13,11 +15,11 @@ public class QueueSystem {
     /**
      * Queue where customers wait for service.
      */
-    private LinkedList<Customer> queue;
+    private LinkedList<QueueEntry> queue;
     /**
      * Server that serve customers requests.
      */
-    private Server server;
+    protected Server server;
     /**
      * maximum Queue length
      */
@@ -39,15 +41,25 @@ public class QueueSystem {
      * @return true if it is enqueued successfully, false If queue is empty in limited
      * queue length systems.
      */
-    public boolean enqueue(Customer customer, int time) {
+    public boolean enqueue(Customer customer, Event afterService) {
         if (queue.size() == maxQLen) return false;
-        if (server.isBusy()) queue.addLast(customer);
-        server.serve(customer);
+        if (server.isBusy()) {
+            QueueEntry entry = new QueueEntry();
+            entry.customer = customer;
+            entry.afterService = afterService;
+            queue.addLast(entry);
+        }
+        server.serve(customer, afterService);
         return true;
     }
     
-    protected Customer dequeue() {
+    protected QueueEntry dequeue() {
         if (queue.size() > 0) return queue.getFirst();
         return null;
+    }
+    
+    protected class QueueEntry {
+        public Customer customer;
+        public Event afterService;
     }
 }

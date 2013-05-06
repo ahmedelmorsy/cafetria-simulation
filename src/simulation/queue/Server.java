@@ -1,4 +1,6 @@
-package cafetria.queue;
+package simulation.queue;
+
+import simulation.global.Event;
 
 /**
  * Queue System Server
@@ -19,7 +21,7 @@ public abstract class Server {
      * serve a customer; 
      * @param customer
      */
-    public abstract void serve(Customer customer);
+    protected abstract void serve(Customer customer, final Event e);
 
     /**
      * set Queue system to be able to pull customers from queue when idle
