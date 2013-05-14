@@ -11,6 +11,12 @@ public abstract class Server {
     
     private QueueSystem qs;
     
+    private String name;
+    
+    public Server(String name) {
+        this.name = name;
+    }
+    
     /**
      * check if server busy serving a customer
      * @return true if server is busy serving a customer and false otherwise.

@@ -4,8 +4,8 @@ import simulation.global.Event;
 
 public class InfServersQueueSystem extends QueueSystem {
 
-    public InfServersQueueSystem(Server server, int queueLen) {
-        super(server, queueLen);
+    public InfServersQueueSystem(String name, Server server, int queueLen) {
+        super(name,server, queueLen);
     }
 
     @Override

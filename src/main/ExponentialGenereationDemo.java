@@ -56,10 +56,13 @@ public class ExponentialGenereationDemo extends ApplicationFrame {
     private HistogramDataset createDataset() {
         
         double[] values = new double[100000];
+        int sum = 0;
         for (int i = 0; i < 100000; i++) {
             values[i] = randGen.nextInt();
+            sum += values[i];
             System.out.println(values[i]);
         }
+        System.out.println("mean = " + sum / 100000);
         
         HistogramDataset dataset = new HistogramDataset();
         dataset.setType(HistogramType.RELATIVE_FREQUENCY);

@@ -18,7 +18,8 @@ public class UniformServer extends Server{
     private Random actGen;
     
     
-    public UniformServer(int stMin, int stMax, int actMin, int actMax, int emp) {
+    public UniformServer(String name, int stMin, int stMax, int actMin, int actMax, int emp) {
+        super(name);
         this.serviceTimeMin = stMin / emp;
         this.serviceTimeMax = stMax / emp;
         this.accumelatedTimeMin = actMin;
@@ -30,8 +31,8 @@ public class UniformServer extends Server{
 
     @Override
     public boolean isBusy() {
-        if (SimulationClk.clock > finishTime) return true;
-        return false;
+        if (SimulationClk.clock > finishTime) return false;
+        return true;
     }
 
     @Override
@@ -47,10 +48,16 @@ public class UniformServer extends Server{
                 e.execute();
                 QueueEntry next;
                 if ((next = getQueueSystem().dequeue()) != null){
+                    System.out.println("Customer " + next.customer.getId() + " left queue and is going to be served");
                     serve(next.customer, next.afterService);
                 } else {
                     finishTime = -1;
                 }
+            }
+
+            @Override
+            public String getDescription() {
+                return "Customer uniform server event";
             }
         });
     }

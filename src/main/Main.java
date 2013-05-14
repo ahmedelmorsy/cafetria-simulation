@@ -2,8 +2,11 @@ package main;
 
 import java.util.Random;
 
+import simulation.global.Const;
 import simulation.global.Event;
+import simulation.global.EventsQueue;
 import simulation.global.SimulationClk;
+import simulation.global.Statistics;
 import simulation.queue.CustomServer;
 import simulation.queue.Customer;
 import simulation.queue.InfServersQueueSystem;
@@ -24,51 +27,82 @@ public class Main {
 
         ExponentialRandom arrivalRand = new ExponentialRandom(30);
 
-        UniformServer hotfoodServ = new UniformServer(50, 120, 20, 40, 1);
-        UniformServer sandwichesServ = new UniformServer(60, 180, 5, 15, 1);
-        UniformServer drinksServ = new UniformServer(5, 20, 5, 10, 1);
-        CustomServer cashier1 = new CustomServer();
-        CustomServer cashier2 = new CustomServer();
+        UniformServer hotfoodServ = new UniformServer("HotFood Server", 50, 120, 20, 40, 1);
+        UniformServer sandwichesServ = new UniformServer("Sandwich Server", 60, 180, 5, 15, 1);
+        UniformServer drinksServ = new UniformServer("Drink Server", 5, 20, 5, 10, 1);
+        CustomServer cashier1 = new CustomServer("Cashier1 Server");
+        CustomServer cashier2 = new CustomServer("Cashier2 Server");
 
-        QueueSystem hotfoodSys = new QueueSystem(hotfoodServ, -1);
-        QueueSystem sandwichesSys = new QueueSystem(sandwichesServ, -1);
-        final QueueSystem drinkSys = new InfServersQueueSystem(drinksServ, -1);
-        final QueueSystem cashierSys1 = new QueueSystem(cashier1, -1);
-        final QueueSystem cashierSys2 = new QueueSystem(cashier2, -1);
+        final QueueSystem hotfoodSys = new QueueSystem("HotFood Server", hotfoodServ, -1);
+        final QueueSystem sandwichesSys = new QueueSystem("Sandwiches Server",sandwichesServ, -1);
+        final QueueSystem drinkSys = new InfServersQueueSystem("Drinks Server",drinksServ, -1);
+        final QueueSystem cashierSys1 = new QueueSystem("Cashier 1", cashier1, -1);
+        final QueueSystem cashierSys2 = new QueueSystem("Cashier 2", cashier2, -1);
 
-        while (SimulationClk.clock < MAX_TIME) {
+        int lastArrival = 0;
+        System.out.println("Simulation Starts ....");
+        while (true) {
             int nextArrival = arrivalRand.nextInt();
+            while (EventsQueue.peekTime() < lastArrival + nextArrival) {
+                EventsQueue.executeEvent();
+            }
             SimulationClk.clock += nextArrival;
+            if (SimulationClk.clock > MAX_TIME)
+                break;
+            lastArrival = SimulationClk.clock;
             int group = getCustomerNum();
+            System.out.println("[" + SimulationClk.clock + "] arrival of " + group + " Customers");
             for (int i = 0; i < group; i++) {
                 final Customer cust = new Customer();
                 int route = getRoute();
                 switch (route) {
                 case 1:
+                    System.out.println("Customer " + cust.getId() + " going to hot food");
+                    Statistics.UpdateQueueLength(hotfoodSys.getQueueLength(), Const.HOTFOOD_SERVER);
                     hotfoodSys.enqueue(cust, new Event() {
 
                         @Override
                         public void execute() {
+                            System.out.println("Customer " + cust.getId() + " finished hot food and going to drinks");
+                            Statistics.UpdateQueueLength(hotfoodSys.getQueueLength(), Const.HOTFOOD_SERVER);
                             drinkSys.enqueue(cust, new JoiningCashierEvent(cashierSys1, cashierSys2, cust));
+                        }
+
+                        @Override
+                        public String getDescription() {
+                            return "hot food service event";
                         }
                     });
                     break;
                 case 2:
+                    System.out.println("Customer " + cust.getId() + " going to sandwiches");
+                    Statistics.UpdateQueueLength(sandwichesSys.getQueueLength(), Const.SANDWICH_SERVER);
                     sandwichesSys.enqueue(cust, new Event() {
 
                         @Override
                         public void execute() {
+                            System.out.println("Customer " + cust.getId() + " finished sandwiches and going to drinks");
+                            Statistics.UpdateQueueLength(sandwichesSys.getQueueLength(), Const.SANDWICH_SERVER);
                             drinkSys.enqueue(cust, new JoiningCashierEvent(cashierSys1, cashierSys2, cust));
+                        }
+                        
+                        @Override
+                        public String getDescription() {
+                            return "sandwiches service event";
                         }
                     });
                     break;
                 case 3:
+                    System.out.println("Customer " + cust.getId() + " going to drinks only");
                     drinkSys.enqueue(cust, new JoiningCashierEvent(cashierSys1, cashierSys2, cust));
                     break;
                 default:
                     break;
                 }
             }
+        }
+        while (EventsQueue.getSize() > 0) {
+            EventsQueue.executeEvent();
         }
     }
 
@@ -111,24 +145,48 @@ public class Main {
 
         @Override
         public void execute() {
+            System.out.println("Customer " + cust.getId() + " want to go to cashier and cashiers have the following: " 
+                    + cashierSys1.getQueueLength() + ", " + cashierSys2.getQueueLength());
             if (cashierSys1.getQueueLength() <= cashierSys2.getQueueLength()) {
+                System.out.println("Customer " + cust.getId() + " decided to go to cashier 1");
+                Statistics.UpdateQueueLength(cashierSys1.getQueueLength() + cashierSys2.getQueueLength(), Const.CASHIER_SERVER);
                 cashierSys1.enqueue(cust, new Event() {
 
                     @Override
                     public void execute() {
                         // Do nothing
+                        System.out.println("Customer " + cust.getId() + " finished and leaving ...");
+                        Statistics.UpdateQueueLength(cashierSys1.getQueueLength() + cashierSys2.getQueueLength(), Const.CASHIER_SERVER);
+                    }
+
+                    @Override
+                    public String getDescription() {
+                        return "Cashier 1 event";
                     }
                 });
             } else {
+                System.out.println("Customer " + cust.getId() + " decided to go to cashier 2");
+                Statistics.UpdateQueueLength(cashierSys1.getQueueLength() + cashierSys2.getQueueLength(), Const.CASHIER_SERVER);
                 cashierSys2.enqueue(cust, new Event() {
 
                     @Override
                     public void execute() {
                         // Do nothing
+                        System.out.println("Customer " + cust.getId() + " finished and leaving ...");
+                        Statistics.UpdateQueueLength(cashierSys1.getQueueLength() + cashierSys2.getQueueLength(), Const.CASHIER_SERVER);
+                    }
+
+                    @Override
+                    public String getDescription() {
+                        return "Cashier 2 event";
                     }
                 });
             }
+        }
 
+        @Override
+        public String getDescription() {
+            return "Joining Cashier event";
         }
 
     }
