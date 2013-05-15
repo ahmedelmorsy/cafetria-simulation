@@ -5,6 +5,7 @@ import java.util.Random;
 import simulation.global.Event;
 import simulation.global.EventsQueue;
 import simulation.global.SimulationClk;
+import simulation.global.Statistics;
 import simulation.queue.QueueSystem.QueueEntry;
 
 public class UniformServer extends Server{
@@ -48,7 +49,9 @@ public class UniformServer extends Server{
                 e.execute();
                 QueueEntry next;
                 if ((next = getQueueSystem().dequeue()) != null){
-                    System.out.println("Customer " + next.customer.getId() + " left queue and is going to be served");
+                    Statistics.console.log("Customer " + next.customer.getId() + " left queue and is going to be served");
+                    Statistics.file.log("[" + SimulationClk.clock + "][" + getName() +"][Service]" + next.customer.getId());
+                    Statistics.CustomerQuitQueue(next.customer, getName());
                     serve(next.customer, next.afterService);
                 } else {
                     finishTime = -1;

@@ -41,5 +41,8 @@ public abstract class Server {
         return this.qs;
     }
     
+    protected String getName(){
+        return this.name;
+    }
     
 }

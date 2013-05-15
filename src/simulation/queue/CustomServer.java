@@ -3,6 +3,7 @@ package simulation.queue;
 import simulation.global.Event;
 import simulation.global.EventsQueue;
 import simulation.global.SimulationClk;
+import simulation.global.Statistics;
 import simulation.queue.QueueSystem.QueueEntry;
 
 public class CustomServer extends Server {
@@ -20,17 +21,19 @@ public class CustomServer extends Server {
     }
 
     @Override
-    public void serve(final Customer customer, Event e) {
+    public void serve(final Customer customer, final Event e) {
         int serviceTime = customer.getAccumlatedTime();
         finishTime = SimulationClk.clock + serviceTime;
         EventsQueue.enqueue(finishTime, new Event() {
             
             @Override
             public void execute() {
-                System.out.println("Customer " + customer.getId() + "finished and leaving");
+                e.execute();
                 QueueEntry next;
                 if ((next = getQueueSystem().dequeue()) != null){
+                    Statistics.file.log("[" + SimulationClk.clock + "][" + getName() +"][Service]" + next.customer.getId());
                     serve(next.customer, next.afterService);
+                    Statistics.CustomerQuitQueue(next.customer, getName());
                 } else {
                     finishTime = -1;
                 }

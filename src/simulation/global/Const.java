@@ -8,4 +8,8 @@ public interface Const {
     public static final String DRINKS_SERVER = "Drinks Server";
     public static final String CASHIER_SERVER = "Cashier Server";
     
+    public static final int CUST_HOTFOOD = 1;
+    public static final int CUST_SANDWICHES = 2;
+    public static final int CUST_DRINKS = 3;
+    
 }

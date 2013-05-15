@@ -3,6 +3,7 @@ package simulation.queue;
 import java.util.LinkedList;
 
 import simulation.global.Event;
+import simulation.global.SimulationClk;
 import simulation.global.Statistics;
 
 
@@ -26,7 +27,7 @@ public class QueueSystem {
      */
     private int maxQLen;
     
-    private String name;
+    protected String name;
     
     /**
      * Construct new queue system with the server given
@@ -49,15 +50,19 @@ public class QueueSystem {
      */
     public boolean enqueue(Customer customer, Event afterService) {
         if (queue.size() == maxQLen) return false;
+        Statistics.CustomerEnteredQueue(customer, this.name);
         if (server.isBusy()) {
-            System.out.println(this.name + " is busy and customer " + customer.getId() + " has to wait");
+            Statistics.console.log(this.name + " is busy and customer " + customer.getId() + " has to wait");
+            Statistics.file.log("[" + SimulationClk.clock + "][" + this.name +"][Enqueue]" + customer.getId());
             QueueEntry entry = new QueueEntry();
             entry.customer = customer;
             entry.afterService = afterService;
             queue.addLast(entry);
             return true;
         }
-        System.out.println("["+ this.name + "] customer " + customer.getId() + " is going to be served");
+        Statistics.console.log("["+ this.name + "] customer " + customer.getId() + " is going to be served");
+        Statistics.file.log("[" + SimulationClk.clock + "][" + this.name +"][Service]" + customer.getId());
+        Statistics.CustomerQuitQueue(customer, this.name);
         server.serve(customer, afterService);
         return true;
     }

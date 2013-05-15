@@ -1,6 +1,8 @@
 package simulation.queue;
 
 import simulation.global.Event;
+import simulation.global.SimulationClk;
+import simulation.global.Statistics;
 
 public class InfServersQueueSystem extends QueueSystem {
 
@@ -10,6 +12,7 @@ public class InfServersQueueSystem extends QueueSystem {
 
     @Override
     public boolean enqueue(Customer customer, Event afterService) {
+        Statistics.file.log("[" + SimulationClk.clock + "][" + this.name +"][Service]" + customer.getId());
         this.server.serve(customer, afterService);
         return true;
     }

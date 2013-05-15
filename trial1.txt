@@ -1,0 +1,37 @@
+[33][Arrival]2
+[33][HotFood Server][Service]1
+[33][HotFood Server][Enqueue]2
+[78][Arrival]4
+[78][HotFood Server][Enqueue]3
+[78][HotFood Server][Enqueue]4
+[78][HotFood Server][Enqueue]5
+[78][HotFood Server][Enqueue]6
+[93][Arrival]1
+[93][HotFood Server][Enqueue]7
+[104][Drinks Server][Service]1
+[104][HotFood Server][Service]2
+[116][Cashier Server][Service]1
+[158][Finish]1
+[199][Drinks Server][Service]2
+[199][HotFood Server][Service]3
+[204][Cashier Server][Service]2
+[237][Finish]2
+[267][Drinks Server][Service]3
+[267][HotFood Server][Service]4
+[282][Cashier Server][Service]3
+[326][Finish]3
+[356][Drinks Server][Service]4
+[356][HotFood Server][Service]5
+[362][Cashier Server][Service]4
+[401][Finish]4
+[413][Drinks Server][Service]5
+[413][HotFood Server][Service]6
+[427][Cashier Server][Service]5
+[464][Finish]5
+[491][Drinks Server][Service]6
+[491][HotFood Server][Service]7
+[502][Cashier Server][Service]6
+[534][Finish]6
+[549][Drinks Server][Service]7
+[565][Cashier Server][Service]7
+[613][Finish]7

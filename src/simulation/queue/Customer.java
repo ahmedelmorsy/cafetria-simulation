@@ -1,6 +1,5 @@
 package simulation.queue;
 
-import simulation.global.SimulationClk;
 
 public class Customer {
     
@@ -8,7 +7,7 @@ public class Customer {
     
     private int id;
     private int accumlatedTime;
-    private int queueEnteranceTime;
+    private int type;
     
     public Customer() {
         this.id = idGen++;
@@ -27,7 +26,11 @@ public class Customer {
         return this.id;
     }
     
-    public void enterQueue() {
-        this.queueEnteranceTime = SimulationClk.clock;
+    public void setType(int route) {
+        this.type = route;
+    }
+    
+    public int getType() {
+        return this.type;
     }
 }
