@@ -53,7 +53,7 @@ public class QueueSystem {
         Statistics.CustomerEnteredQueue(customer, this.name);
         if (server.isBusy()) {
             Statistics.console.log(this.name + " is busy and customer " + customer.getId() + " has to wait");
-            Statistics.file.log("[" + SimulationClk.clock + "][" + this.name +"][Enqueue]" + customer.getId());
+            Statistics.trace.log("[" + SimulationClk.clock + "][" + this.name +"][Enqueue]" + customer.getId());
             QueueEntry entry = new QueueEntry();
             entry.customer = customer;
             entry.afterService = afterService;
@@ -61,7 +61,7 @@ public class QueueSystem {
             return true;
         }
         Statistics.console.log("["+ this.name + "] customer " + customer.getId() + " is going to be served");
-        Statistics.file.log("[" + SimulationClk.clock + "][" + this.name +"][Service]" + customer.getId());
+        Statistics.trace.log("[" + SimulationClk.clock + "][" + this.name +"][Service]" + customer.getId());
         Statistics.CustomerQuitQueue(customer, this.name);
         server.serve(customer, afterService);
         return true;

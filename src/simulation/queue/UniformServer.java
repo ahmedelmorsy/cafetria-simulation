@@ -50,7 +50,7 @@ public class UniformServer extends Server{
                 QueueEntry next;
                 if ((next = getQueueSystem().dequeue()) != null){
                     Statistics.console.log("Customer " + next.customer.getId() + " left queue and is going to be served");
-                    Statistics.file.log("[" + SimulationClk.clock + "][" + getName() +"][Service]" + next.customer.getId());
+                    Statistics.trace.log("[" + SimulationClk.clock + "][" + getName() +"][Service]" + next.customer.getId());
                     Statistics.CustomerQuitQueue(next.customer, getName());
                     serve(next.customer, next.afterService);
                 } else {

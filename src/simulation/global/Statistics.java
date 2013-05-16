@@ -38,11 +38,16 @@ public class Statistics {
     private static HashMap<String, Integer> maxDelayInQueue;
 
     public static EventsLogger console = new ConsoleLogger();
-    public static EventsLogger file = new FileLogger(new File("trial1.txt"));
+    public static EventsLogger trace = new FileLogger(new File("trial0"));
+    
 
     private static XYSeries queueLengthDataset = new XYSeries("First");
 
     static {
+        reset();
+    }
+    
+    public static void reset() {
         queueLengthDataset.add(0, 0);
 
         systemInfoMap = new ArrayList<Statistics.QueueInfo>();

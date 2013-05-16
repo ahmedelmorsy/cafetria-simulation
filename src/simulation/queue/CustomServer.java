@@ -31,7 +31,7 @@ public class CustomServer extends Server {
                 e.execute();
                 QueueEntry next;
                 if ((next = getQueueSystem().dequeue()) != null){
-                    Statistics.file.log("[" + SimulationClk.clock + "][" + getName() +"][Service]" + next.customer.getId());
+                    Statistics.trace.log("[" + SimulationClk.clock + "][" + getName() +"][Service]" + next.customer.getId());
                     serve(next.customer, next.afterService);
                     Statistics.CustomerQuitQueue(next.customer, getName());
                 } else {
