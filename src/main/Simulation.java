@@ -78,6 +78,7 @@ public class Simulation {
                     + group + " Customers");
             Statistics.trace.log("[" + SimulationClk.clock + "][Arrival]"
                     + group);
+            Statistics.CustomersEnteredSystem(group);
             for (int i = 0; i < group; i++) {
                 final Customer cust = new Customer();
                 int route = getRoute();
@@ -344,6 +345,7 @@ public class Simulation {
                         sum += cashiers[i].getQueueLength();
                     }
                     Statistics.UpdateQueueLength(sum, Const.CASHIER_SERVER);
+                    Statistics.CustomersQuitSystem(1);
                 }
 
                 @Override

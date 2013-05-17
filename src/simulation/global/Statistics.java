@@ -155,15 +155,24 @@ public class Statistics {
         }
     }
 
-    public static void UpdateSystemSize(int size) {
-        QueueInfo info = systemInfoMap.get(systemInfoMap.size() - 1);
-        info.to = SimulationClk.clock;
-        info = new QueueInfo();
+    public static void CustomersEnteredSystem(int num) {
+        QueueInfo temp = systemInfoMap.get(systemInfoMap.size() - 1);
+        temp.to = SimulationClk.clock;
+        QueueInfo info = new QueueInfo();
         info.from = SimulationClk.clock;
-        info.count = size;
+        info.count = temp.count + num;
         systemInfoMap.add(info);
     }
-
+    
+    public static void CustomersQuitSystem(int num) {
+        QueueInfo temp = systemInfoMap.get(systemInfoMap.size() - 1);
+        temp.to = SimulationClk.clock;
+        QueueInfo info = new QueueInfo();
+        info.from = SimulationClk.clock;
+        info.count = temp.count - num;
+        systemInfoMap.add(info);
+    }
+    
     public static double getTimeAvgNumInQueue(String qType) {
         if (timeAvgNumInQueue.containsKey(qType))
             return timeAvgNumInQueue.get(qType);
